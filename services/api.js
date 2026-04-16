@@ -1,18 +1,41 @@
-// services/api.js
-// This file simulates fetching data from a server.
+const BASE_URL = "https://fakestoreapi.com";
 
-export const getCategories = () => [
-  { id: '1', name: 'Electronics' },
-  { id: '2', name: 'Clothing' },
-  { id: '3', name: 'Books' },
-  { id: '4', name: 'Home & Kitchen' },
-];
+/**
+ * Fetches all available product categories.
+ */
+export const getCategories = async () => {
+  const response = await fetch(`${BASE_URL}/products/categories`);
 
-export const getProducts = (categoryId) => {
-  // In a real app, you would fetch products based on the categoryId.
-  return [
-    { id: '1', name: 'Smartphone', price: '$699', description: 'A high-end smartphone with a great camera.' },
-    { id: '2', name: 'Laptop', price: '$999', description: 'A powerful laptop for all your work needs.' },
-    { id: '3', name: 'Headphones', price: '$199', description: 'Noise-canceling headphones for immersive sound.' },
-  ];
+  if (!response.ok) {
+    throw new Error("Failed to fetch categories");
+  }
+
+  return await response.json();
+};
+
+/**
+ * Fetches products belonging to a specific category.
+ */
+export const getProductsByCategory = async (category) => {
+  const encodedCategory = encodeURIComponent(category);
+  const response = await fetch(`${BASE_URL}/products/category/${encodedCategory}`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch products for category: ${category}`);
+  }
+
+  return await response.json();
+};
+
+/**
+ * Fetches details for a single product by its ID.
+ */
+export const getProductById = async (id) => {
+  const response = await fetch(`${BASE_URL}/products/${id}`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch product with ID: ${id}`);
+  }
+
+  return await response.json();
 };
