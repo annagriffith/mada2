@@ -6,15 +6,20 @@ import {
   ScrollView,
   ActivityIndicator,
   Pressable,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { getProductById } from '../services/api';
+import { addToCart } from '../store/cartSlice';
 
 const ProductDetailScreen = ({ route, navigation }) => {
   const { productId } = route.params;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -29,6 +34,13 @@ const ProductDetailScreen = ({ route, navigation }) => {
     };
     fetchProduct();
   }, [productId]);
+
+  const handleAddToCart = () => {
+    if (product) {
+      dispatch(addToCart(product));
+      Alert.alert("Success", "Added to cart");
+    }
+  };
 
   if (loading) return (
     <View style={styles.center}><ActivityIndicator size="large" color="#2196F3" /></View>
@@ -55,7 +67,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
         <Text style={styles.description}>{product.description}</Text>
 
-        <Pressable style={[styles.btn, styles.addBtn]} onPress={() => console.log('Added')}>
+        <Pressable style={[styles.btn, styles.addBtn]} onPress={handleAddToCart}>
           <Text style={styles.btnText}>ADD TO CART</Text>
         </Pressable>
 
